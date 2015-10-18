@@ -54,6 +54,7 @@ int main( int argc, char **argv ) {
 			dpx_endian = 0;
 		else {
 			printf( "File is not a DPX file\n" );
+			fclose( inFP );
 			return(5);
 		}
 	}
@@ -112,7 +113,6 @@ int main( int argc, char **argv ) {
 	EndianSwap32( (unsigned char *)&imghead.PixelsPerLine );
 	EndianSwap32( (unsigned char *)&imghead.LinesPerElement );
 
-//	print_DPXint16( "Orientation", imghead.Orientation, false, " - " );
 	print_prebuf( "Orientation" );
 	switch( imghead.Orientation ) {
 		case 0:	printf( "LtoR, TtoB\n" ); break;
@@ -153,7 +153,6 @@ int main( int argc, char **argv ) {
 		print_DPXint32( "High Data", 		imghead.ImageElement[i].HighData );
 		print_DPXfloat( "High Quantity",	imghead.ImageElement[i].HighQuantity );
 
-//		print_DPXint8( "Descriptor",		imghead.ImageElement[i].Descriptor, false, " - " );
 		print_prebuf( "Descriptor" );
 		switch( imghead.ImageElement[i].Descriptor ) {
 			case 0:   printf( "User-defined\n" ); break;
@@ -181,7 +180,6 @@ int main( int argc, char **argv ) {
 			case 156: printf( "User-defined\n" ); break;
 		}
 
-//		print_DPXint8( "Transfer",	imghead.ImageElement[i].Transfer, false, " - " );
 		print_prebuf( "Transfer" );
 		if( imghead.ImageElement[i].Transfer >= 13 )
 			printf( "Invalid (Reserved)\n" );
@@ -203,7 +201,6 @@ int main( int argc, char **argv ) {
 			}
 		}
 
-//		print_DPXint8( "Colorimetric", imghead.ImageElement[i].Colorimetric, false, " - " );
 		print_prebuf( "Colorimetric" );
 		if( imghead.ImageElement[i].Colorimetric >= 13 )
 			printf( "Invalid (Reserved)\n" );
@@ -225,8 +222,8 @@ int main( int argc, char **argv ) {
 		print_DPXint8  ( "Bit Depth",	imghead.ImageElement[i].BitSize );
 		print_DPXstring( "Packing", 	imghead.ImageElement[i].Packing ? (char *)"Filled 32-bit" : (char *)"Packed 32-bit" );
 		print_DPXstring( "RLE Encoding",imghead.ImageElement[i].Encoding ? (char *)"Yes" : (char *)"None" );
-		print_DPXint32 ( "EOL Padding",	imghead.ImageElement[i].EndOfLinePadding );
-		print_DPXint32 ( "Img Padding",	imghead.ImageElement[i].EndOfImagePadding );
+		print_DPXint32 ( "EOL Padding",	imghead.ImageElement[i].EndOfLinePadding, true, " bytes" );
+		print_DPXint32 ( "Img Padding",	imghead.ImageElement[i].EndOfImagePadding, true, " bytes" );
 	}
 
 	printf( "\n-- Orientation Headers --\n\n" );
@@ -262,10 +259,11 @@ int main( int argc, char **argv ) {
 	}
 
 	if( orienthead.AspectRatio[0] == 0xFFFFFFFF )
-		print_DPXstring( "Aspect Ratio", (char *)UNDEF_STR );
+		print_DPXstring( "Pixel Aspect", (char *)UNDEF_STR );
 	else {
 		print_DPXint32( "Pixel Aspect", orienthead.AspectRatio[0], false, ":" );
-		print_DPXint32( "", orienthead.AspectRatio[1] );
+		print_DPXint32( "", orienthead.AspectRatio[1], false, " (" );
+		print_DPXfloat( "", (orienthead.AspectRatio[0] / orienthead.AspectRatio[1]), true, ")" );
 	}
 
 	printf( "\n-- Film Industry Header --\n\n" );
@@ -277,7 +275,7 @@ int main( int argc, char **argv ) {
 	print_DPXstring( "Film ID Code",	filmhead.FilmMfgId );
 	print_DPXstring( "Film Type",		filmhead.FilmType );
 	print_DPXstring( "Perf Offset",		filmhead.Offset );
-	print_DPXstring( "Prefixn",			filmhead.Prefix );
+	print_DPXstring( "Prefix",			filmhead.Prefix );
 	print_DPXstring( "Count",			filmhead.Count );
 	print_DPXstring( "Film Format", 	filmhead.Format );
 
