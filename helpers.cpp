@@ -1,4 +1,4 @@
-// dpxpeek 1.0 by Bob Maple (bobm [at] burner.com)
+// dpxpeek by Bob Maple (bobm-git  [at]  burner [dot] com)
 //
 // Licensed under the Creative Commons Attribution-ShareAlike (CC BY-SA)
 // https://creativecommons.org/licenses/by-sa/4.0/

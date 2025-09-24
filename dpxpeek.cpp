@@ -1,4 +1,4 @@
-// dpxpeek by Bob Maple (bobm [at] burner.com)
+// dpxpeek by Bob Maple (bobm-git  [at]  burner [dot] com)
 //
 // Licensed under the Creative Commons Attribution-ShareAlike (CC BY-SA)
 // https://creativecommons.org/licenses/by-sa/4.0/
@@ -27,10 +27,7 @@ int main( int argc, char **argv ) {
 	INDUSTRYFILMINFOHEADER			filmhead;
 	INDUSTRYTELEVISIONINFOHEADER	tvhead;
 
-	// printf( "int is %d\nshort is %d\nlong is %d\n", sizeof( int ), sizeof( short ), sizeof( long ) );
-	// printf( "float is %d\ndouble is %d\n\n", sizeof( float ), sizeof( double ) );
-
-	printf( "dpxpeek 1.0 by Bob Maple (bobm [at] burner.com)\n" );
+	printf( "dpxpeek 2025.09 by Bob Maple (bobm [at] burner [dot] com)\n" );
 
 	if( argc < 2 ) {
 		printf( "Usage: %s [FILE]\n", argv[0] );
@@ -105,6 +102,7 @@ int main( int argc, char **argv ) {
 	print_DPXstring( "Project",			dpx.Project );
 	print_DPXstring( "Copyright",		dpx.Copyright );
 	print_DPXstring( "User Data Chunk", dpx.UserSize ? (char *)"Yes" : (char *)"No" );
+	print_DPXint32 ( "User Data Size",  dpx.UserSize );
 
 	printf( "\n-- Image Headers --\n\n" );
 
@@ -283,18 +281,8 @@ int main( int argc, char **argv ) {
 	print_DPXint32( "Sequence Len", 	filmhead.SequenceLen );
 	print_DPXint32( "Frame Held", 		filmhead.HeldCount );
 
-//	printf( "---- Framerate is %f\n", filmhead.FrameRate );
-//	ptr = (unsigned char *)&filmhead.FrameRate;
-//	printf( "\nFilm FPS Hex : %x %x %x %x\n", *ptr, *(ptr+1), *(ptr+2), *(ptr+3) );
-//	if( filmhead.FrameRate == 0x0000807F )
-//		printf( "Fuck all, it's infinite\n" );
-//	printf( "  AND NOW WE SWAP!\n" );
-
 	EndianSwap32( (unsigned char *)&filmhead.FrameRate );
 	EndianSwap32( (unsigned char *)&filmhead.ShutterAngle );
-
-//	ptr = (unsigned char *)&filmhead.FrameRate;
-//	printf( "FPS Hex      : %x %x %x %x\n", *ptr, *(ptr+1), *(ptr+2), *(ptr+3) );
 
 	print_DPXfloat( "FPS",				filmhead.FrameRate );
 	print_DPXfloat( "Shutter Angle",	filmhead.ShutterAngle );
@@ -321,9 +309,6 @@ int main( int argc, char **argv ) {
 							(tvhead.TimeCode & 0xF0) >> 4, (tvhead.TimeCode & 0xF) );
 	}
 
-//	ptr = (unsigned char *)&tvhead.FrameRate;
-//	printf( "FPS Hex      : %x %x %x %x\n", *ptr, *(ptr+1), *(ptr+2), *(ptr+3) );
-
 	print_DPXfloat( "FPS",			tvhead.FrameRate );
 	print_DPXint8 ( "Interlace",	tvhead.Interlace );
 	print_DPXfloat( "Gamma",		tvhead.Gamma );
@@ -332,4 +317,3 @@ int main( int argc, char **argv ) {
 
 	printf( "\n" );
 }
-
